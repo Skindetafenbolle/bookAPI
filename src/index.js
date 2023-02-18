@@ -1,32 +1,13 @@
-import { connectToDB } from './config/mongodb.js';
 import express from 'express'
-const book = require('../config/mongodb')
- 
-import { bookRouter } from './routes/bookRoute.js';
 import bodyParser from 'body-parser';
 
+import { bookRouter} from "./books/booksRouter.js";
+import { db } from './config/dbConn.js';
+await db;
 
-const app = express()
+const app = express();
 
+app.use(bookRouter);
 app.use(bodyParser.json())
 
-connectToDB()
-    .then(() =>{
-        app.use('/books', bookRouter)
-
-        app.listen(3000, ()=>{
-            console.log('listen')
-        })
-    })
-    .catch((error) =>{
-        console.error('failed', error)
-        process.exit()
-    })
-
-// app.use((req,res,next) =>{
-//     res.status('404').send('Not found')
-// })
-
-app.get('/', (req,res)=>{
-    res.send('Main page')
-})
+app.listen(3000, '0.0.0.0');
